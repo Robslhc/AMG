@@ -116,6 +116,7 @@ HYPRE_Int hypre_ParCSRRelax(/* matrix to relax with */
                comm_pkg = hypre_ParCSRMatrixCommPkg(A);
             }
 
+            // AMG Communication
             num_sends = hypre_ParCSRCommPkgNumSends(comm_pkg);
             u_buf_data = hypre_TAlloc(HYPRE_Real,
                                       hypre_ParCSRCommPkgSendMapStart(comm_pkg, num_sends));
@@ -130,6 +131,8 @@ HYPRE_Int hypre_ParCSRRelax(/* matrix to relax with */
             hypre_ParCSRCommHandleDestroy(comm_handle);
 
             hypre_TFree(u_buf_data);
+
+            // AMG Communication end
          }
 
          if (relax_weight == 1.0 && omega == 1.0) /* symmetric Gauss-Seidel */
@@ -263,6 +266,7 @@ HYPRE_Int hypre_ParCSRRelax(/* matrix to relax with */
                comm_pkg = hypre_ParCSRMatrixCommPkg(A);
             }
 
+            // AMG Communication
             num_sends = hypre_ParCSRCommPkgNumSends(comm_pkg);
             u_buf_data = hypre_TAlloc(HYPRE_Real,
                                       hypre_ParCSRCommPkgSendMapStart(comm_pkg, num_sends));
@@ -275,6 +279,7 @@ HYPRE_Int hypre_ParCSRRelax(/* matrix to relax with */
             }
             comm_handle = hypre_ParCSRCommHandleCreate(1,comm_pkg,u_buf_data,u_offd_data);
             hypre_ParCSRCommHandleDestroy(comm_handle);
+            // AMG Communication end
 
             hypre_TFree(u_buf_data);
          }

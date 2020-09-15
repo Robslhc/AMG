@@ -106,6 +106,9 @@ hypre_ParCSRMatrixMatvecOutOfPlace( HYPRE_Complex       alpha,
 #ifdef HYPRE_PROFILE
    hypre_profile_times[HYPRE_TIMER_ID_PACK_UNPACK] -= hypre_MPI_Wtime();
 #endif
+
+   // AMG Communication
+
    HYPRE_Int use_persistent_comm = 0;
 #ifdef HYPRE_USING_PERSISTENT_COMM
    use_persistent_comm = num_vectors == 1;
@@ -203,13 +206,20 @@ hypre_ParCSRMatrixMatvecOutOfPlace( HYPRE_Complex       alpha,
       }
    }
 
+   // AMG Communication end
+
 #ifdef HYPRE_PROFILE
    hypre_profile_times[HYPRE_TIMER_ID_HALO_EXCHANGE] += hypre_MPI_Wtime();
 #endif
+
    hypre_CSRMatrixMatvecOutOfPlace( alpha, diag, x_local, beta, b_local, y_local, 0);
+
 #ifdef HYPRE_PROFILE
    hypre_profile_times[HYPRE_TIMER_ID_HALO_EXCHANGE] -= hypre_MPI_Wtime();
 #endif
+
+   // AMG Communication
+
    if (use_persistent_comm)
    {
 #ifdef HYPRE_USING_PERSISTENT_COMM
@@ -225,6 +235,9 @@ hypre_ParCSRMatrixMatvecOutOfPlace( HYPRE_Complex       alpha,
       }
       hypre_TFree(comm_handle);
    }
+
+   // AMG Communication end
+
 #ifdef HYPRE_PROFILE
    hypre_profile_times[HYPRE_TIMER_ID_HALO_EXCHANGE] += hypre_MPI_Wtime();
 #endif
@@ -234,6 +247,7 @@ hypre_ParCSRMatrixMatvecOutOfPlace( HYPRE_Complex       alpha,
 #ifdef HYPRE_PROFILE
    hypre_profile_times[HYPRE_TIMER_ID_PACK_UNPACK] -= hypre_MPI_Wtime();
 #endif
+
    hypre_SeqVectorDestroy(x_tmp);
    x_tmp = NULL;
    if (!use_persistent_comm)

@@ -429,8 +429,14 @@ hypre_ParVectorInnerProd( hypre_ParVector *x,
 #ifdef HYPRE_PROFILE
    hypre_profile_times[HYPRE_TIMER_ID_ALL_REDUCE] -= hypre_MPI_Wtime();
 #endif
+
+   // AMG Communication
+
    hypre_MPI_Allreduce(&local_result, &result, 1, HYPRE_MPI_REAL,
                        hypre_MPI_SUM, comm);
+
+   // AMG Communication end
+   
 #ifdef HYPRE_PROFILE
    hypre_profile_times[HYPRE_TIMER_ID_ALL_REDUCE] += hypre_MPI_Wtime();
 #endif
